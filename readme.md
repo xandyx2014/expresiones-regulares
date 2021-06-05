@@ -74,8 +74,10 @@ Para validar el salto de línea con el comodín punto usamos el modificador “s
 
 \ Con la diagonal invertida (backslash) escapamos a los metacaracteres
 
+```
 La diagonal invertida no “escapa” a las literales, sólo metacaracteres.
 Las comillas no “escapan” metacaracteres.
+```
 \.
 /9\.99/
 /foto.\.jpg/ empata con foto1.jpg foto2.jpg, pero no foto33.jpg
@@ -87,7 +89,9 @@ Retornos de línea \r, \n, \r\n+
 escape \e
 cambio de página \f
 tabulador vertical \v
+```
 Caracteres ASCII o ANSI:
+```
 0xA9 = \xA9
 /a g u a/ empata con “a g u a” pero no con “a_g_u_a” ni “a*g*u*a”
 ```
