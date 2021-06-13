@@ -448,3 +448,154 @@ Podemos seleccionar cadenas que contengan “antes” alguna subcadena, o en
 su defecto, que no la tengan como condición:
 - /(?<=regex)/ aserción positiva
 - /(?<!regex)/ aserción negativa
+# Ejemplos
+## Validar un año
+```txt
+/\d{4}/ 0000-9999
+/(19|20)\d\d/ 1900-2099
+/(19[5-9]\d|20[0-4]\d)/ 1950-2049
+```
+## Validar nombres
+```
+/^([A-Za-z.’\- ]+)(([A-Za-z.’\-]+)? )([A-Za-z.’\-]+)$/
+/^([A-Za-z.’\- ]+)(?:([A-Za-z.’\-]+)? )([A-Za-z.’\-]+)$/
+/^([A-Za-z ñáéíóú]{2,60})$/i
+/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóúü]+[\s]*)+$/
+/[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮ
+ŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,48}/
+```
+## Validar codigos postales
+```
+^[0-9]{5}$
+^([1-9]{2}|[0-9][1-9]|[1-9][0-9])[0-9]{3}$
+```
+## Igualar correos electrónicos
+```
+^\w+@\w+\.\w{3}$
+^\w+@[\w.]+\.\w{2,3}$
+^\w+@[\w.]+\.[A-Za-z]{2,3}$
+^[\w.%+\-]+@[\w.\-]+\.[A-Za-z]{2,3}$
+^[\w.%+\-]+@[\w.\-]+\.[A-Za-z]{2,7}$
+```
+## Javascript y expresiones regulares
+Metodos que utilizan expresioens regulares
+- exec: Un metodo TegExp que ejecuta una busqueda  por una coincidencia en una cadena. devuelve un array de informacion
+- test: Un meotdo RegExp que verifica una coincidencai en una cadena. devuelve true o false
+- match: Un metodo String que ejecuta una busqueda poir una coincidencia en una gran cadena. Devuelve un array de informacion o null si no existe una coincidencia alguna
+- search: Un meotdo String que verifica una coincidena en una cadena. Devulve el indice de la coincidencia, o tambien -1 si la busqueda falla
+- replace UN metodo String que ejecuta la busqueda por una coincidencia en una cadena y remplaza la subcadena encontrada con una subcadena de remplazo
+- split Un metodo String que utiliza una expresion regular o una cadena fija. para cortar cadenas y colocarlo en un array de subcadenas
+
+Entonces:
+- Cuando quiera saber si un patron se encuientra en una cadena, utilize los metodos `test` o `search`
+- Para obtener mas informacion (pero de ejecuacion mas lenta) utilize los metodos exec o match
+- Si usted utiliza `exec` o `macth` y se logra la coincidencia, estos metodos devuelve un arreglo y actualizan las propiedades del objecto de la expresion regular asociada y tambien aquellas del objecto de la expresion regular predefinida, regexp
+- Si la coincidencia falla, el metodo `exec` devuelve `null` (que equivale `false`)
+## Crear una expresions regular en javascript
+```js
+const re = /ab+c/;
+const re = new RegExp('ab+c)
+```
+- Las expresiones regulares son objectos en Javascript y tienen, entre otras las siguiesntes propiedades:
+- `lastIndex`: La pocision de donde iniciar la proxima busqueda (Esta propiedad solo es iniciada si la expresion utilza la bandera g).
+- `source`: El texto del patron. Actualizando al momento de creacion, no al ejecutarse
+
+## Metodo exec()
+```js
+var re = new RegExp("e","g");
+console.log(re.exec("Murcielago"));
+console.log(re.lastIndex) ;
+// ["e", index: 5, input: "Murcielago", groups: undefined]
+```
+## Metodo test()
+```js
+var re = /e/gi;
+console.log(re.test("En el agua clara, que brota en la fuente")); // true
+console.log(re.lastIndex); // 1
+```
+## Metodo match()
+```js
+var str = "En el agua clara, que brota en la fuente"; 
+var res = str.match(/e/gi);
+console.log(res); // (6) ["E", "e", "e", "e", "e", "e"]
+```
+## Metodo search()
+```js
+var str = "En el agua clara, que brota en la fuente";
+var n = str.search(/x/i);
+console.log(n); // -1
+```
+## Metodo replace()
+```js
+var str = "Adoro a mi mamá, Mamá, mamá!";
+var res = str.replace(/mamá/gi, "papá");
+console.log(res); // Adoro a mi papá, papá, papá!
+```
+## Metodo split()
+```js
+var str = "En el agua clara, que, brota, en la fuente";
+console.log(str.split(/[\s,]+/)); // (9) ["En", "el", "agua", "clara", "que", "brota", "en", "la", "fuente"]
+```
+## Uso de parentesis
+```js
+var re = /(\w+)\s(\w+)/;
+var str = "Pedro Picapiedra";
+var nombre = str.replace(re,"$2, $1");
+console.log (str, nombre); // Pedro Picapiedra Picapiedra, Pedro
+```
+## Banderas o modificadores
+```js
+var re = new RegExp("\\w+\\s", "g");
+var str = "En el agua clara que brota en la fuente ";
+var myArray = str.match(re);
+console.log(myArray); // (9) ["En ", "el ", "agua ", "clara ", "que ", "brota ", "en ", "la ", "fuente "]
+```
+## Bandera sticky
+```js
+var sticky;
+try { RegExp('','y'); sticky = true; }
+catch(e) { sticky = false; }
+alert(sticky); 
+```
+```js
+var str = "Primera línea\nSegunda línea";
+var regex = /(\S+) línea\n?/y;
+
+var match = regex.exec(str);
+console.log(match);  //  "Primera"
+console.log(regex.lastIndex); //  11
+
+var match2 = regex.exec(str);
+console.log(match2); //  "Segunda"
+console.log(regex.lastIndex); //  "22"
+
+var match3 = regex.exec(str);
+console.log(match3); //  "true"
+```
+## Ejemplo: Ordena e intercambiar nombres
+```js
+	//cadena original
+		var nombres = "Pedro Picapiedra; Pablo Marmol; Roger Federer; Rafael Nadal; Andy Murray";
+		//Arreglo de salida
+		var salida = ["Cadena original: "+nombres];
+		//Expresion Regular para partir la cadena
+		var re = /\s*;\s*/;
+		//Dividir la cadena en un arreglo
+		var nombres_array = nombres.split(re);
+		//Resultado
+		salida.push("Nombres separados: "+nombres_array.join("; "));
+		//Expresion regular para separar nombres y apellidos
+		var re = /(\w+)\s+(\w+)/;
+		//ciclo para invertir los nombres
+		var nombres_invertidos = new Array();
+		for (var i = 0; i < nombres_array.length; i++) {
+			nombre_invertido = nombres_array[i].replace(re,"$2, $1");
+			nombres_invertidos.push(nombre_invertido);
+		}
+		salida.push("Nombres invertidos: "+nombres_invertidos.join("; "));
+		//Ordenar el arreglo
+		nombres_invertidos.sort();
+		salida.push("Nombres alfabeticos: "+nombres_invertidos.join("; "));
+		console.log(salida);
+    //(4) ["Cadena original: Pedro Picapiedra; Pablo Marmol; Roger Federer; Rafael Nadal; Andy Murray", "Nombres separados: Pedro Picapiedra; Pablo Marmol; Roger Federer; Rafael Nadal; Andy Murray", "Nombres invertidos: Picapiedra, Pedro; Marmol, Pablo; Federer, Roger; Nadal, Rafael; Murray, Andy", "Nombres alfabeticos: Federer, Roger; Marmol, Pablo; Murray, Andy; Nadal, Rafael; Picapiedra, Pedro"]
+```
